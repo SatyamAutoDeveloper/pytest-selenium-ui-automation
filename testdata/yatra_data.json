@@ -1,0 +1,63 @@
+{
+    "flights": "0",
+    "hotels": "1",
+    "one_way": "O",
+    "round_trip": "R",
+    "multi_city": "M",
+    "default_departure_city": "New Delhi",
+    "default_arrival_city": "Mumbai",
+    "one_way_flight": {
+      "from_city": "Gwalior",
+      "to_city": "Bangalore",
+      "passengers": {
+        "adults": 1,
+        "children": 0,
+        "infants": 0
+      },
+      "class": "Economy"
+    },
+    "round_trip_flight": {
+      "from_city": "Chicago",
+      "to_city": "Miami",
+      "departure_date": "2024-08-10",
+      "return_date": "2024-08-20",
+      "passengers": {
+        "adults": 2,
+        "children": 1,
+        "infants": 0
+      },
+      "class": "Business"
+    },
+    "multi_city_flight": {
+      "legs": [
+        {
+          "from_city": "San Francisco",
+          "to_city": "Seattle",
+          "departure_date": "2024-09-05"
+        },
+        {
+          "from_city": "Seattle",
+          "to_city": "Denver",
+          "departure_date": "2024-09-10"
+        },
+        {
+          "from_city": "Denver",
+          "to_city": "San Francisco",
+          "departure_date": "2024-09-15"
+        }
+      ],
+      "passengers": {
+        "adults": 1,
+        "children": 0,
+        "infants": 0
+      },
+      "class": "First"
+    },
+    "hotels_booking": {
+      "city": "Orlando",
+      "check_in_date": "2024-10-01",
+      "check_out_date": "2024-10-07",
+      "rooms": 1,
+      "guests_per_room": 2
+    }
+  }
