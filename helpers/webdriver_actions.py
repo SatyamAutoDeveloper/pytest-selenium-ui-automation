@@ -4,6 +4,7 @@ import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
+from selenium.common.exceptions import NoSuchElementException, StaleElementReferenceException
 logger = logging.getLogger(__name__)
 
 _driver_instance = None
@@ -46,9 +47,22 @@ def find_elements(locator, shadow_dom=False, replace_value=None):
         pass
     return driver.find_elements(*formatted_locator)
 
-def click(locator, replace_value=None, shadow_dom=False):
-    """Click on an element located by locator."""
-    find_element(locator, replace_value, shadow_dom).click()
+def click(locator, replace_value=None, shadow_dom=False, max_retries=3):
+    """Click on an element up to max_retries times"""
+    for attempt in range(1, max_retries + 1):
+        try:
+            find_element(locator, replace_value, shadow_dom).click()
+            logger.info(f"✅ Successful click on attempt {attempt}.")
+            return  # Exit the function if successful
+
+        except (NoSuchElementException, StaleElementReferenceException) as e:
+            logger.warning(f"⚠️ Attempt {attempt} failed: {type(e).__name__}. Retrying...")
+            if attempt < max_retries:
+                time.sleep(2)  # Wait 2 seconds before the next retry
+            else:
+                logger.error(f"❌ All {max_retries} attempts failed for locator: {locator[1], replace_value}")
+                raise
+    
 
 def wait_for_element_to_be_visible(locator, timeout=10, poll_frequency=0.5, shadow_dom=False, replace_value=None):
     """Wait until element is visible and return it."""
@@ -146,6 +160,25 @@ def is_element_present(locator, shadow_dom=False, replace_value=None):
         return True
     except Exception:
         return False
+    
+
+def is_element_not_present(locator, shadow_dom=False, replace_value=None):
+    """
+    Check if an element is not present in the DOM.
+
+    Args:
+        locator (str): The locator used to find the element.
+        shadow_dom (bool, optional): Indicates whether to search within a shadow DOM. Defaults to False.
+        replace_value (any, optional): A value to replace in the locator if needed. Defaults to None.
+
+    Returns:
+        bool: True if the element is not present, False otherwise.
+    """
+    try:
+        find_element(locator, replace_value, shadow_dom)
+        return False
+    except Exception:
+        return True
 
 def get_element_text(locator, shadow_dom=False, replace_value=None):
     """
@@ -397,4 +430,21 @@ def is_element_displayed(locator, replace_value=None, shadow_dom=False):
         bool: True if the element is displayed, False otherwise.
     """
     elem = find_element(locator, replace_value, shadow_dom)
-    return get_driver().execute_script("return arguments[0].offsetParent !== null;", elem)      
+    return get_driver().execute_script("return arguments[0].offsetParent !== null;", elem)    
+
+
+def double_click_on_element(locator, replace_value=None, shadow_dom=False):
+    """
+    Performs a double-click action on the specified element.
+
+    Args:
+        locator (str): The locator used to find the element.
+        shadow_dom (bool, optional): Indicates whether to search within a shadow DOM. Defaults to False.
+        replace_value (any, optional): An optional value to replace in the locator if needed. Defaults to None.
+
+    Raises:
+        NoSuchElementException: If the element cannot be found using the provided locator.
+        ElementNotInteractableException: If the element is not interactable at the time of the action.
+    """
+    elem = find_element(locator, replace_value, shadow_dom)
+    ActionChains(get_driver()).double_click(elem).perform()
