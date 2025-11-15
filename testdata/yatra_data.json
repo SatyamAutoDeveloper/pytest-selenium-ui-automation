@@ -6,9 +6,14 @@
     "multi_city": "M",
     "default_departure_city": "New Delhi",
     "default_arrival_city": "Mumbai",
+    "departure_calendar": "Departure Date inputbox",
+    "return_calendar": "Return Date inputbox", 
+    "airline_name": "Air India",
+    "target_price": 10000,
     "one_way_flight": {
       "from_city": "Gwalior",
       "to_city": "Bangalore",
+      "departure_after_days": 1,
       "passengers": {
         "adults": 1,
         "children": 0,
@@ -17,10 +22,10 @@
       "class": "Economy"
     },
     "round_trip_flight": {
-      "from_city": "Chicago",
-      "to_city": "Miami",
-      "departure_date": "2024-08-10",
-      "return_date": "2024-08-20",
+      "from_city": "Bhopal",
+      "to_city": "Kathmandu",
+      "departure_after_days": 1,
+      "return_after_days": 90,
       "passengers": {
         "adults": 2,
         "children": 1,
@@ -33,17 +38,17 @@
         {
           "from_city": "San Francisco",
           "to_city": "Seattle",
-          "departure_date": "2024-09-05"
+          "departure_after_days": 1
         },
         {
           "from_city": "Seattle",
           "to_city": "Denver",
-          "departure_date": "2024-09-10"
+          "departure_after_days": 10
         },
         {
           "from_city": "Denver",
           "to_city": "San Francisco",
-          "departure_date": "2024-09-15"
+          "departure_after_days": 15
         }
       ],
       "passengers": {
