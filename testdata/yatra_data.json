@@ -9,7 +9,8 @@
     "departure_calendar": "Departure Date inputbox",
     "return_calendar": "Return Date inputbox", 
     "airline_name": "Air India",
-    "target_price": 10000,
+    "target_price": 15000,
+    "msg_no_flights_found": "No matching flights remains for applied filters",
     "one_way_flight": {
       "from_city": "Gwalior",
       "to_city": "Bangalore",
@@ -34,21 +35,21 @@
       "class": "Business"
     },
     "multi_city_flight": {
-      "legs": [
+      "multi_cities" : [
         {
-          "from_city": "San Francisco",
-          "to_city": "Seattle",
-          "departure_after_days": 1
+          "to_city": "Bangalore",
+          "departure_after_days": 5,
+          "calender_index": 2
         },
         {
-          "from_city": "Seattle",
-          "to_city": "Denver",
-          "departure_after_days": 10
+          "to_city": "Gwalior",
+          "departure_after_days": 10,
+          "calender_index": 3
         },
         {
-          "from_city": "Denver",
-          "to_city": "San Francisco",
-          "departure_after_days": 15
+          "to_city": "New Delhi",
+          "departure_after_days": 15,
+          "calender_index": 4
         }
       ],
       "passengers": {
