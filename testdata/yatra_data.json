@@ -5,20 +5,29 @@
     "round_trip": "R",
     "multi_city": "M",
     "default_departure_city": "New Delhi",
+    "same_arrival_city": "New Delhi",
+    "same_city_search_error_msg": "Please select a different city",
     "default_arrival_city": "Mumbai",
     "departure_calendar": "Departure Date inputbox",
     "return_calendar": "Return Date inputbox", 
     "airline_name": "Air India",
     "target_price": 15000,
     "msg_no_flights_found": "No matching flights remains for applied filters",
+    "past_departure_days": -2,
+    "no_flight": {
+      "from_city":  "Satna",
+      "to_city": "Bangalore",
+      "no_flights_found_msg": "Sorry, There were no flights found for this route and date combination."
+    },
     "one_way_flight": {
       "from_city": "Gwalior",
       "to_city": "Bangalore",
       "departure_after_days": 1,
       "passengers": {
-        "adults": 1,
+        "travellers_type": ["Adult", "Infant"],
+        "max_adults": 9,
         "children": 0,
-        "infants": 0
+        "max_infants": 9
       },
       "class": "Economy"
     },
