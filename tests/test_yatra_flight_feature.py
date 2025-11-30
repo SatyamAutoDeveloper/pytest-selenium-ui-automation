@@ -62,3 +62,56 @@ def test_multi_city_flight_search():
     select_multi_cities(yatra_data["multi_city_flight"]["multi_cities"], yatra_data["departure_calendar"])
     logger.info("Verifying that search results are displayed for multi-city flight search.")
     assert is_search_results_displayed_for_multi_city() is True, "Search results are not displayed for multi-city flight search."
+
+
+@pytest.mark.negative
+def test_search_flight_with_past_date():
+    logger.info("Starting test: test_search_flight_with_past_date")
+    close_yatra_login_popup()
+    close_ads_iframe()
+    select_yatra_service(yatra_data["flights"])
+    select_flight_way(yatra_data["one_way"])
+    assert is_past_date_disabled(yatra_data["past_departure_days"], yatra_data["departure_calendar"]) is True, "Past Date is not disabled"
+
+
+@pytest.mark.negative
+def test_search_flight_same_city():
+    logger.info("Starting test: test_search_flight_same_city")
+    close_yatra_login_popup()
+    close_ads_iframe()
+    select_yatra_service(yatra_data["flights"])
+    select_flight_way(yatra_data["one_way"])
+    arrival_city_input(yatra_data["same_arrival_city"], yatra_data["default_arrival_city"])
+    click_search_button()
+    logger.info("Verifying that appropriate error message is displayed for same city flight search.")
+    assert is_same_city_search_error_displayed(yatra_data["same_city_search_error_msg"]) is True, "Error message for same city flight search is not displayed or not matched."
+
+
+@pytest.mark.negative
+def test_search_flight_with_no_available_flights_route():
+    logger.info("Starting test: test_search_flight_with_no_available_flights_route")
+    close_yatra_login_popup()
+    close_ads_iframe()
+    select_yatra_service(yatra_data["flights"])
+    select_flight_way(yatra_data["one_way"])
+    departure_city_input(yatra_data["no_flight"]["from_city"], yatra_data["default_departure_city"])
+    arrival_city_input(yatra_data["no_flight"]["to_city"], yatra_data["default_arrival_city"])
+    click_search_button()
+    logger.info("Verifying that appropriate message is displayed when no flights are available.")
+    assert is_no_flights_found_message_displayed(yatra_data["no_flight"]["no_flights_found_msg"]) is True, "No flights found message is not displayed or not matched."
+
+
+@pytest.mark.edge
+def test_search_flight_with_max_allowed_adults_and_infants():
+    logger.info("Starting test: test_search_flight_with_max_allowed_adults_and_infants")
+    close_yatra_login_popup()
+    close_ads_iframe()
+    select_yatra_service(yatra_data["flights"])
+    select_flight_way(yatra_data["one_way"])
+    select_passenger(yatra_data["one_way_flight"]["passengers"]["travellers_type"][0], yatra_data["one_way_flight"]["passengers"]["max_adults"])
+    implicit_wait(5)
+    select_passenger(yatra_data["one_way_flight"]["passengers"]["travellers_type"][1], yatra_data["one_way_flight"]["passengers"]["max_infants"])
+    implicit_wait(2)
+    click_search_button()
+    logger.info("Verifying that search results are displayed for edge case flight search.")
+    assert is_search_results_displayed_for_one_way() is True, "Search results are not displayed for edge case flight search."

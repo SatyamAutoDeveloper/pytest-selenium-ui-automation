@@ -27,11 +27,13 @@ def select_flight_way(way_type):
     click(flight_way_radio_btn, way_type)
 
 
-def navigate_to_date_in_calendar(target_date):
+def navigate_to_date_in_calendar(target_date, days_from_today):
     """Navigate the calendar to the target date by clicking the next button until the date is visible."""
     while is_element_not_present(date_input, replace_value=target_date):
-        click(calendar_next_button)
-
+        if days_from_today < 0:
+            click(calendar_prev_button)
+        else:
+            click(calendar_next_button)
 
 def select_date(days_from_today, journey_type, index):
     """Selects a date based on days from today."""
@@ -42,10 +44,18 @@ def select_date(days_from_today, journey_type, index):
     selected_date = get_formatted_date_in_days(days_from_today)
     logger.info(f"Selecting the date: {selected_date}")
     if not is_element_present(date_input, replace_value=selected_date):
-        logger.info(
-            f"Date {selected_date} is not visible, navigating to next month in calendar."
-        )
-        navigate_to_date_in_calendar(selected_date)
+        logger.info(f"Date {selected_date} is not visible, navigating to the month in calendar.")
+        navigate_to_date_in_calendar(selected_date, days_from_today)
+    if days_from_today < 0:
+        logger.info(f"Checking if past date {selected_date} is disabled.")
+        is_disabled = get_element_attribute(date_input, "aria-disabled", replace_value=selected_date)
+        logger.info(f"Date {selected_date} disabled status: {is_disabled}")
+        if is_disabled == "true":
+            logger.info(f"{selected_date} is disabled as this date is already past")
+            return True
+        else:
+            logger.error(f"{selected_date} is not disabled, test failed.")
+            return False    
     double_click_on_element(date_input, selected_date)
 
 
@@ -249,3 +259,33 @@ def is_search_results_displayed_for_multi_city():
         f"Multi-city search results: {[element.replace('\n', ' ') for element in multi_city_elements]}"
     )
     return is_element_displayed(multi_city_results_section)
+
+
+def is_past_date_disabled(past_departure_days, journey_type):
+    """Checks if past dates are disabled in the date picker."""
+    return select_date(past_departure_days, journey_type, index=1)
+
+
+def is_same_city_search_error_displayed(expected_msg):
+    """Gets and Validate the message displayed when searching for the same city."""
+    actual_msg = get_element_text(same_city_search).strip()
+    logger.info(f"Actual message: '{actual_msg}', Expected message: '{expected_msg}'")
+    return actual_msg == expected_msg
+
+
+def is_no_flights_found_message_displayed(expected_msg):
+    """Gets and Validate the message displayed when no flights are found."""
+    wait_for_element_to_be_visible(no_flight_found, timeout=30)
+    actual_msg = get_element_text(no_flight_found).strip()
+    logger.info(f"Actual message: '{actual_msg}', Expected message: '{expected_msg}'")
+    return actual_msg == expected_msg
+
+
+def select_passenger(traveller_type, number_of_traveller):
+    """Selects the allowed adults and infants passengers."""
+    logger.info(f"Selecting the {traveller_type} passengers with {number_of_traveller} travellers.")
+    travellers = (select_traveller_option[0], select_traveller_option[1].format(traveller_type, number_of_traveller))
+    click(traveller_filter)
+    implicit_wait(5)
+    click(travellers)
+    click(apply_traveller_btn)

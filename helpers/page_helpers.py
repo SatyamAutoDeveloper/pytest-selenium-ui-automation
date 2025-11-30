@@ -39,7 +39,10 @@ def get_formatted_date_in_days(days_offset=0):
     # %B = Full month name (e.g., November)
     # %Y = Year (e.g., 2025)
     # Note: We use an f-string to inject the day_with_suffix variable
-    date_format = target_date.strftime(f"Choose %A, %B {day_with_suffix}, %Y")
+    if days_offset < 0:
+        date_format = target_date.strftime(f"Not available %A, %B {day_with_suffix}, %Y")
+    else:
+        date_format = target_date.strftime(f"Choose %A, %B {day_with_suffix}, %Y")
     
     return date_format
 
