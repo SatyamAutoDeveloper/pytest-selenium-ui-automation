@@ -203,3 +203,56 @@ def report_path():
     path = pathlib.Path(CONFIG.get('report_path', 'Settings', fallback=REPORT_PATH_FALLBACK))
     path.mkdir(parents=True, exist_ok=True)
     return str(path)
+
+
+@pytest.fixture(scope="function", autouse=True)
+def capture_test_level_logs(request):
+    """
+    Fixture to set up a function-scoped log file for each test case.
+    The log file is named after the test function and placed in a 'logs' directory.
+    """
+    # 1. Define Log File Path
+    log_dir = pathlib.Path("logs")
+    log_dir.mkdir(exist_ok=True)  # Create logs directory if it doesn't exist
+
+    # Get the test name (e.g., test_login_success)
+    test_name = request.node.name
+    log_file_path = log_dir / f"{test_name}.log"
+
+    # 2. Configure Logger
+    # Get the root logger
+    logger = logging.getLogger() 
+    logger.setLevel(logging.INFO) # Set the minimum logging level (e.g., INFO, DEBUG)
+
+    # Remove any existing custom handlers (to prevent duplicate logging or inherited handlers)
+    for handler in logger.handlers[:]:
+        if isinstance(handler, logging.FileHandler):
+            logger.removeHandler(handler)
+    
+    # 3. Create File Handler
+    file_handler = logging.FileHandler(log_file_path, mode='w') # 'w' overwrites, use 'a' to append
+    
+    # 4. Define Log Format
+    # You can customize this format as needed
+    formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        datefmt='%Y-%m-%d %H:%M:%S'
+    )
+    file_handler.setFormatter(formatter)
+    
+    # 5. Add Handler to Logger
+    logger.addHandler(file_handler)
+    
+    # Log a start message
+    logger.info(f"--- STARTING TEST: {test_name} ---")
+
+    # The 'yield' pauses the fixture and runs the actual test function
+    yield logger
+
+    # --- TEARDOWN phase (after the test function runs) ---
+    logger.info(f"--- FINISHED TEST: {test_name} ---")
+    
+    # 6. Clean Up
+    # Remove the file handler to ensure it doesn't leak into the next test
+    logger.removeHandler(file_handler)
+    file_handler.close()

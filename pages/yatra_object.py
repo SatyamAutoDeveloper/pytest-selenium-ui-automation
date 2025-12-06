@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 def select_yatra_service(service_name):
     """Selects the specified Yatra service tab."""
-    wait_for_element_to_be_visible(yatra_services, timeout=10, replace_value=service_name)
+    wait_for_element_to_be_visible(yatra_services, timeout=30, replace_value=service_name)
     click(yatra_services, service_name)
 
 
@@ -178,6 +178,8 @@ def set_price_filter(driver, target_price):
     cost_slider = find_element(price_slider)  # Ensure slider is loaded
     slider_width = cost_slider.size["width"]
 
+    final_target_price = target_price + int(min_price)
+
     logger.info(
         f"Slider width in pixels: {slider_width}, Min price: {min_price}, Max price: {max_price}"
     )
@@ -187,12 +189,12 @@ def set_price_filter(driver, target_price):
         slider_width,
         int(min_price),
         int(max_price),
-        target_price,
+        final_target_price,
     )
     actual_price = get_element_text(target_price_elem)
     assert (
-        14900 <= int(actual_price.replace(",", "")) <= 15100
-    ), f"Price filter not set correctly. Expected: {target_price}, Found: {actual_price.replace(',', '')}"
+        int(min_price) + 9900 <= int(actual_price.replace(",", "")) <= int(min_price) + 10100
+    ), f"Price filter not set correctly. Expected: {final_target_price}, Found: {actual_price.replace(',', '')}"
 
 
 def select_departure_time_range():
@@ -281,11 +283,16 @@ def is_no_flights_found_message_displayed(expected_msg):
     return actual_msg == expected_msg
 
 
-def select_passenger(traveller_type, number_of_traveller):
+def select_passenger(adult_traveller, infant_traveller):
     """Selects the allowed adults and infants passengers."""
-    logger.info(f"Selecting the {traveller_type} passengers with {number_of_traveller} travellers.")
-    travellers = (select_traveller_option[0], select_traveller_option[1].format(traveller_type, number_of_traveller))
+    logger.info(f"Selecting the {adult_traveller[0]} passengers with {adult_traveller[1]} travellers.")
+    adults = (select_traveller_option[0], select_traveller_option[1].format(adult_traveller[0], adult_traveller[1]))
+    logger.info(f"Selecting the {infant_traveller[0]} passengers with {infant_traveller[1]} travellers.")
+    infants = (select_traveller_option[0], select_traveller_option[1].format(infant_traveller[0], infant_traveller[1]))
+    wait_for_element_to_be_visible(traveller_filter)
     click(traveller_filter)
-    implicit_wait(5)
-    click(travellers)
+    click(adults)
+    implicit_wait(2)
+    click(infants)
+    wait_for_element_to_be_visible(apply_traveller_btn)
     click(apply_traveller_btn)

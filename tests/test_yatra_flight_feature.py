@@ -104,14 +104,16 @@ def test_search_flight_with_no_available_flights_route():
 @pytest.mark.edge
 def test_search_flight_with_max_allowed_adults_and_infants():
     logger.info("Starting test: test_search_flight_with_max_allowed_adults_and_infants")
+    adult_traveller = yatra_data["one_way_flight"]["passengers"]["travellers_type"][0]
+    max_adult = yatra_data["one_way_flight"]["passengers"]["max_adults"]
+    infant_traveller = yatra_data["one_way_flight"]["passengers"]["travellers_type"][1]
+    max_infant = yatra_data["one_way_flight"]["passengers"]["max_infants"]
     close_yatra_login_popup()
     close_ads_iframe()
     select_yatra_service(yatra_data["flights"])
     select_flight_way(yatra_data["one_way"])
-    select_passenger(yatra_data["one_way_flight"]["passengers"]["travellers_type"][0], yatra_data["one_way_flight"]["passengers"]["max_adults"])
+    select_passenger([adult_traveller, max_adult],[infant_traveller, max_infant])
     implicit_wait(5)
-    select_passenger(yatra_data["one_way_flight"]["passengers"]["travellers_type"][1], yatra_data["one_way_flight"]["passengers"]["max_infants"])
-    implicit_wait(2)
     click_search_button()
     logger.info("Verifying that search results are displayed for edge case flight search.")
     assert is_search_results_displayed_for_one_way() is True, "Search results are not displayed for edge case flight search."
