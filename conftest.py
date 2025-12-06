@@ -12,7 +12,7 @@ from configparser import ConfigParser
 
 # Ensure these imports point to your actual file
 from helpers.webdriver_actions import set_driver, clear_driver, load_url, get_driver
-from pages.yatra_object import remove_webklipper_iframe
+from pages.yatra_flight_object import remove_webklipper_iframe
 
 sys.dont_write_bytecode = True
 logger = logging.getLogger(__name__)

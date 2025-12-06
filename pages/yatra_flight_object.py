@@ -1,6 +1,6 @@
 from helpers.page_helpers import *
 from helpers.webdriver_actions import *
-from locators.yatra_locators import *
+from locators.yatra_flight_locators import *
 import logging
 
 logger = logging.getLogger(__name__)
