@@ -117,3 +117,14 @@ def test_search_flight_with_max_allowed_adults_and_infants():
     click_search_button()
     logger.info("Verifying that search results are displayed for edge case flight search.")
     assert is_search_results_displayed_for_one_way() is True, "Search results are not displayed for edge case flight search."
+
+
+@pytest.mark.edge
+def test_input_flight_with_invalid_city():
+    logger.info("Starting test: test_input_flight_with_invalid_city")
+    close_yatra_login_popup()
+    close_ads_iframe()
+    select_yatra_service(yatra_data["flights"])
+    select_flight_way(yatra_data["one_way"])
+    logger.info("Verifying that appropriate message is displayed for invalid city flight search.")
+    assert enter_invalid_city_and_validate_msg(yatra_data["one_way_flight"]["invalid_city"], yatra_data["default_departure_city"]) is True, "Error message for invalid city flight search is not displayed or not matched."

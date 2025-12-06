@@ -44,3 +44,4 @@ ads_iframe_img = (xpath, "//iframe[@id='webklipper-publisher-widget-container-no
 ads_iframe_close_btn = (css_selector, "button[name='close']")
 same_city_search = (css_selector, "#simple-toast-message div p")
 no_flight_found = (xpath, "//section[@id='Flight-APP']/descendant::p[2]")
+input_invalid_city = (xpath, "//h2[normalize-space()='No match found for the search']")

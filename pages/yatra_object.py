@@ -296,3 +296,12 @@ def select_passenger(adult_traveller, infant_traveller):
     click(infants)
     wait_for_element_to_be_visible(apply_traveller_btn)
     click(apply_traveller_btn)
+
+
+def enter_invalid_city_and_validate_msg(city_name, default_city):
+    """Validate Message and enter the invalid departure city."""
+    click(open_flight_input, default_city)
+    wait_for_element_to_be_visible(flight_input)
+    type_value(flight_input, city_name)
+    implicit_wait(1)
+    return is_element_displayed(input_invalid_city)
