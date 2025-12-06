@@ -2,10 +2,10 @@ import logging
 import pytest 
 from helpers import file_handling
 from helpers.webdriver_actions import get_current_url
-from pages.yatra_object import *
+from pages.yatra_flight_object import *
 
 logger = logging.getLogger(__name__)
-yatra_data = file_handling.load_test_data("../testdata/yatra_data.json")
+yatra_data = file_handling.load_test_data("../testdata/yatra_flight_data.json")
 
 
 @pytest.mark.positive
