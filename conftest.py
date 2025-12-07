@@ -230,7 +230,7 @@ def capture_test_level_logs(request):
             logger.removeHandler(handler)
     
     # 3. Create File Handler
-    file_handler = logging.FileHandler(log_file_path, mode='w') # 'w' overwrites, use 'a' to append
+    file_handler = logging.FileHandler(log_file_path, mode='w', encoding='utf-8') # 'w' overwrites, use 'a' to append
     
     # 4. Define Log Format
     # You can customize this format as needed

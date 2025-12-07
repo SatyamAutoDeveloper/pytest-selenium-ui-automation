@@ -2,8 +2,6 @@ from selenium.webdriver.common.by import By
 xpath = By.XPATH
 css_selector = By.CSS_SELECTOR
 
-yatra_services = (xpath, "//button[@id='simple-tab-{}']")
-yatra_popup_close_button = (xpath, "(//img[@alt='cross'])[1]")
 flight_way_radio_btn = (xpath, "//input[@value='{}']")
 open_flight_input = (xpath, "//p[@title='{}']")
 flight_input = (xpath, "//input[@id='input-with-icon-adornment']")
@@ -40,8 +38,6 @@ start_departure_date = (xpath, "//span[contains(text(),'Start')]")
 add_another_city_btn = (xpath, "//button[normalize-space()='+ Add Another City']")
 multi_city_results_section = (xpath, "//div[contains(@class,'legselector')]//ul[contains(@class,'full-width no-wrap ovf-hidden mob-calendar')]//li")
 multi_city_search_btn = (xpath, "(//button[contains(@type,'button')][normalize-space()='Search'])[1]")
-ads_iframe_img = (xpath, "//iframe[@id='webklipper-publisher-widget-container-notification-frame']")
-ads_iframe_close_btn = (css_selector, "button[name='close']")
 same_city_search = (css_selector, "#simple-toast-message div p")
 no_flight_found = (xpath, "//section[@id='Flight-APP']/descendant::p[2]")
 input_invalid_city = (xpath, "//h2[normalize-space()='No match found for the search']")

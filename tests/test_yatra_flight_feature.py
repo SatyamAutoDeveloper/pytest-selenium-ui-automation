@@ -3,17 +3,18 @@ import pytest
 from helpers import file_handling
 from helpers.webdriver_actions import get_current_url
 from pages.yatra_flight_object import *
+from pages.yatra_common_object import *
 
 logger = logging.getLogger(__name__)
 yatra_data = file_handling.load_test_data("../testdata/yatra_flight_data.json")
-
+yatra_common_data = file_handling.load_test_data("../testdata/yatra_common_data.json")
 
 @pytest.mark.positive
 def test_one_way_search_flights():
     logger.info("Starting test: test_one_way_search_flights")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     departure_city_input(yatra_data["one_way_flight"]["from_city"], yatra_data["default_departure_city"])
     arrival_city_input(yatra_data["one_way_flight"]["to_city"], yatra_data["default_arrival_city"])
@@ -28,7 +29,7 @@ def test_round_trip_search_international_flights():
     logger.info("Starting test: test_round_trip_search_international_flights")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["round_trip"])
     departure_city_input(yatra_data["round_trip_flight"]["from_city"], yatra_data["default_departure_city"])
     arrival_city_input(yatra_data["round_trip_flight"]["to_city"], yatra_data["default_arrival_city"])
@@ -45,7 +46,7 @@ def test_apply_multiple_valid_filters(driver):
     logger.info("Starting test: Apply multiple valid filters (e.g., Airlines, Price Range, and Departure Time).")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     click_search_button()
     logger.info("Applying multiple filters on the search results.")
@@ -57,7 +58,7 @@ def test_multi_city_flight_search():
     logger.info("Starting test: test_multi_city_flight_search")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["multi_city"])
     select_multi_cities(yatra_data["multi_city_flight"]["multi_cities"], yatra_data["departure_calendar"])
     logger.info("Verifying that search results are displayed for multi-city flight search.")
@@ -69,7 +70,7 @@ def test_search_flight_with_past_date():
     logger.info("Starting test: test_search_flight_with_past_date")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     assert is_past_date_disabled(yatra_data["past_departure_days"], yatra_data["departure_calendar"]) is True, "Past Date is not disabled"
 
@@ -79,7 +80,7 @@ def test_search_flight_same_city():
     logger.info("Starting test: test_search_flight_same_city")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     arrival_city_input(yatra_data["same_arrival_city"], yatra_data["default_arrival_city"])
     click_search_button()
@@ -92,7 +93,7 @@ def test_search_flight_with_no_available_flights_route():
     logger.info("Starting test: test_search_flight_with_no_available_flights_route")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     departure_city_input(yatra_data["no_flight"]["from_city"], yatra_data["default_departure_city"])
     arrival_city_input(yatra_data["no_flight"]["to_city"], yatra_data["default_arrival_city"])
@@ -110,7 +111,7 @@ def test_search_flight_with_max_allowed_adults_and_infants():
     max_infant = yatra_data["one_way_flight"]["passengers"]["max_infants"]
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     select_passenger([adult_traveller, max_adult],[infant_traveller, max_infant])
     implicit_wait(5)
@@ -124,7 +125,7 @@ def test_input_flight_with_invalid_city():
     logger.info("Starting test: test_input_flight_with_invalid_city")
     close_yatra_login_popup()
     close_ads_iframe()
-    select_yatra_service(yatra_data["flights"])
+    select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
     logger.info("Verifying that appropriate message is displayed for invalid city flight search.")
     assert enter_invalid_city_and_validate_msg(yatra_data["one_way_flight"]["invalid_city"], yatra_data["default_departure_city"]) is True, "Error message for invalid city flight search is not displayed or not matched."

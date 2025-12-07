@@ -1,0 +1,9 @@
+{
+    "hotels_booking": {
+      "city": "Bangalore",
+      "check_in_after_days": 1,
+      "check_out_after_days": 2,
+      "rooms": 1,
+      "guests_per_room": 2
+    }
+}
