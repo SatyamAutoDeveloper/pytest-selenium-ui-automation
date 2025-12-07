@@ -1,6 +1,4 @@
 {
-    "flights": "0",
-    "hotels": "1",
     "one_way": "O",
     "round_trip": "R",
     "multi_city": "M",
@@ -68,12 +66,5 @@
         "infants": 0
       },
       "class": "First"
-    },
-    "hotels_booking": {
-      "city": "Orlando",
-      "check_in_date": "2024-10-01",
-      "check_out_date": "2024-10-07",
-      "rooms": 1,
-      "guests_per_room": 2
     }
   }

@@ -119,3 +119,24 @@ def set_horizontal_slider(driver, handle_locator, track_width, min_val, max_val,
     except Exception as e:
         logger.error(f"An error occurred while setting the slider: {e}")
         raise
+
+
+def scroll_element_into_view_in_side_bar(driver, sidebar_locator, target_element_locator):
+    """
+    Scrolls a sidebar element to bring a target element into view.
+
+    Args:
+        driver: The Selenium WebDriver instance.
+        sidebar_locator: Tuple containing the By method and locator string for the sidebar.
+        target_element_locator: Tuple containing the By method and locator string for the target element.
+    """
+    try:
+        sidebar = driver.find_element(*sidebar_locator)
+        target_element = driver.find_element(*target_element_locator)
+
+        driver.execute_script("arguments[0].scrollTop = arguments[1];", sidebar, target_element.location['y'])
+        logger.info("Scrolled the sidebar to bring the target element into view.")
+
+    except Exception as e:
+        logger.error(f"An error occurred while scrolling the sidebar: {e}")
+        raise
