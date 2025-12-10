@@ -1,9 +1,26 @@
 {
+  "invalid_checkout_date": -1,
+  "checkout_calendar": 2,
+  "invalid_city_name": "sskbsfdk",
     "hotels_booking": {
-      "city": "Bangalore",
+      "city": "Bangalore,",
       "check_in_after_days": 1,
       "check_out_after_days": 2,
       "rooms": 1,
       "guests_per_room": 2
+    },
+    "complex_filters": {
+      "star_rating": "5 Star",
+      "locality": "Marathahalli",
+      "theme": "Free WiFi"
+    },
+    "checkout_more_than_15_days":{
+      "check_out_after_days": 31,
+      "expected_error_message": "Your stay period cannot exceed 15 nights for online hotel booking."
+    },
+    "add_multiple_guests_rooms": {
+      "rooms_index": 8,
+      "guests_per_room": {"1":3, "3":2, "5":2, "7":2},
+      "expected_room_and_guests_info": "4 Rooms, 9 Guests"
     }
 }

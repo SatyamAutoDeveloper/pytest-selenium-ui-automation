@@ -8,14 +8,16 @@ logger = logging.getLogger(__name__)
 
 def select_city(driver, city_name):
     """Selects the departure and arrival city."""
-    logger.info(f"Selecting the city: {city_name}")
+    city_name_option = (select_hotel_city_list_item[0], select_hotel_city_list_item[1].format(city_name))
+    logger.info(f"Selecting the city: {city_name} with option locator: {city_name_option}")
     wait_for_element_to_be_visible(open_hotel_city)
     click(open_hotel_city)
     wait_for_element_to_be_visible(hotel_city_input)
     type_value(hotel_city_input, city_name)
-    wait_for_element_to_be_visible(select_hotel_city_list)
-    scroll_element_into_view_in_side_bar(driver, select_hotel_city_list, select_hotel_city_list_item)
-    click(select_hotel_city_list_item)
+    implicit_wait(5)
+    wait_for_element_to_be_visible(select_hotel_city_list_dd_container)
+    scroll_element_into_view_in_side_bar(driver, select_hotel_city_list_dd_container, city_name_option)
+    click(city_name_option)
 
 
 def navigate_to_date_in_calendar(target_date, days_from_today):
@@ -59,6 +61,93 @@ def verify_hotel_search_results_displayed():
     """Verifies that hotel search results are displayed."""
     logger.info("Verifying that hotel search results are displayed.")
     wait_for_element_to_be_visible(hotel_search_results_section)
+    scroll_element_into_view(hotel_search_results_section)
+    breadcrumb = get_element_text(search_result_breadcrumb)
+    logger.info(f"Search Result Breadcrumb: {breadcrumb}")
     available_hotel_text = get_element_text(hotel_search_results_section)
     logger.info(f"Available Hotel Options: {available_hotel_text}")
-    return "hotel options available" in available_hotel_text.lower()
+    return "hotel options available" in available_hotel_text.lower() and "Bangalore" in breadcrumb
+
+
+def apply_complex_filters_on_hotel_search(driver, localities, theme):
+    """Applies complex filters on hotel search results."""
+    logger.info("Applying complex filters on hotel search results.")
+    localities_elem = (hotel_filter_option[0], hotel_filter_option[1].format(localities))
+    theme_elem = (hotel_filter_option[0], hotel_filter_option[1].format(theme))
+    scroll_element_into_view_in_side_bar(driver, filters_side_panel, star_5_rating_filter_option)
+    click(star_5_rating_filter_option)
+    if is_element_present(localities_elem) is False:
+        scroll_element_into_view_in_side_bar(driver, filters_side_panel, localities_show_more_btn)
+        click(localities_show_more_btn)
+    scroll_element_into_view_in_side_bar(driver, filters_side_panel, localities_elem)
+    click(localities_elem)
+    scroll_element_into_view_in_side_bar(driver, filters_side_panel, theme_elem)
+    click(theme_elem)
+
+
+def verify_applied_filters_on_hotel_search(driver, expected_filters):
+    """Verifies that the applied filters are displayed correctly."""
+    logger.info("Verifying the applied filters on hotel search results.")
+    wait_for_element_to_be_visible(applied_filters_section)
+    scroll_element_into_view_in_side_bar(driver, filters_side_panel, applied_filters_section)
+    applied_filters = get_elements_text(applied_filters_section)
+    logger.info(f"Applied Filters: {applied_filters}")
+    for expected_filter in expected_filters:
+        if expected_filter not in applied_filters:
+            logger.error(f"Expected filter '{expected_filter}' not found in applied filters.")
+            return False
+    logger.info("All expected filters are correctly applied.")
+    return True
+
+
+def is_checkout_date_disabled_for_invalid_date_selection(invalid_checkout_days, checkout_calendar):
+    """Verify checkout date is disabled when selecting before checkin date"""
+    is_disabled = select_date(invalid_checkout_days, checkout_calendar)
+    logger.info(f"is checkout disabled when selecting before checkin date:: {is_disabled}")
+    return is_disabled
+
+
+def verify_the_invalid_city_search(city_name):
+    """Verifies that searching for an invalid city shows an empty list."""
+    logger.info("Verifying invalid city search with empty list.")
+    wait_for_element_to_be_visible(open_hotel_city)
+    click(open_hotel_city)
+    wait_for_element_to_be_visible(hotel_city_input)
+    type_value(hotel_city_input, city_name)
+    implicit_wait(5)
+    wait_for_element_to_be_visible(invalid_city_search_with_empty_list)
+    is_empty_list_displayed = is_element_present(invalid_city_search_with_empty_list)
+    logger.info(f"Is invalid city search with empty list displayed: {is_empty_list_displayed}")
+    return is_empty_list_displayed
+
+
+def select_the_search_with_max_room(driver, rooms_to_add, guests_per_room):
+    """Verifies adding multiple rooms and guests."""
+    logger.info("Verifying adding multiple rooms and guests.")
+    click(open_room_and_guests_btn)
+    wait_for_element_to_be_visible(room_and_guests_popup)
+    for room in range(1, rooms_to_add + 1, 2):
+        if room > 1:
+            click(add_room_button)
+            logger.info(f"Added room with Index:: {room}")
+        adults = guests_per_room.get(str(room))
+        if adults:
+            select_adults_elem = (select_adults[0], select_adults[1].format(adults, room))
+            scroll_element_into_view_in_side_bar(driver, room_and_guests_popup, select_adults_elem)
+            click(select_adults_elem)
+            logger.info(f"Selected {adults} adults for room index {room}.")
+    click(apply_room_and_guest_button)
+    logger.info("Applied room and guest selection.")
+    actual_room_and_guests_info = get_element_text(selected_room_and_guests_info)
+    logger.info(f"Selected Room and Guests Info: {actual_room_and_guests_info}")
+    return actual_room_and_guests_info
+
+
+def get_more_than_15_days_checkout_error_message(checkout_more_than_15_days, checkout_calendar, expected_error_message):
+    """gets the error message for 30 days checkout after check-in."""
+    logger.info("Getting the error message for 30 days checkout after check-in.")
+    select_date(checkout_more_than_15_days, checkout_calendar)
+    wait_for_element_to_be_visible(checkout_more_than_15_days_error_message, replace_value=expected_error_message)
+    is_error_message_visible = is_element_present(checkout_more_than_15_days_error_message, replace_value=expected_error_message)
+    logger.info(f"Error message displayed: {is_error_message_visible}")
+    return is_error_message_visible
