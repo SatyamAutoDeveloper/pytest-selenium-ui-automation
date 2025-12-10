@@ -134,8 +134,27 @@ def scroll_element_into_view_in_side_bar(driver, sidebar_locator, target_element
         sidebar = driver.find_element(*sidebar_locator)
         target_element = driver.find_element(*target_element_locator)
 
-        driver.execute_script("arguments[0].scrollTop = arguments[1];", sidebar, target_element.location['y'])
-        logger.info("Scrolled the sidebar to bring the target element into view.")
+        ## 2. Execute JavaScript to Scroll the Container
+        
+        # The script calculates the exact relative position needed to bring the 
+        # target element to the top of the scrollable container.
+        script = """
+        const container = arguments[0];
+        const element = arguments[1];
+        
+        // Calculate the desired scroll position: 
+        // Element's top offset - Container's top offset + Container's current scroll position.
+        // This calculates the relative position of the element inside the container 
+        // and adds it to the current scroll to move to the new position.
+        const scrollPosition = element.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop;
+        
+        // Set the container's scrollTop property
+        container.scrollTop = scrollPosition;
+        """
+        
+        driver.execute_script(script, sidebar, target_element)
+        
+        logger.info(f"Scrolled sidebar to bring element into view.")
 
     except Exception as e:
         logger.error(f"An error occurred while scrolling the sidebar: {e}")
