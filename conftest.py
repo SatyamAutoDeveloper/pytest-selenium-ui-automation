@@ -12,6 +12,7 @@ from configparser import ConfigParser
 
 # Ensure these imports point to your actual file
 from helpers.webdriver_actions import set_driver, clear_driver, load_url, get_driver
+from pages.yatra_common_object import close_ads_iframe, close_yatra_login_popup
 from pages.yatra_flight_object import remove_webklipper_iframe
 
 sys.dont_write_bytecode = True
@@ -192,6 +193,8 @@ def load_base_url(driver):
     time.sleep(2)
     load_url(BASE_URL)
     remove_webklipper_iframe(driver)
+    close_yatra_login_popup()
+    close_ads_iframe()
     logger.info(f"Current URL after loading base URL: {get_driver().current_url}")
 
 

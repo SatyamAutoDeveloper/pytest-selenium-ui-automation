@@ -151,3 +151,63 @@ def get_more_than_15_days_checkout_error_message(checkout_more_than_15_days, che
     is_error_message_visible = is_element_present(checkout_more_than_15_days_error_message, replace_value=expected_error_message)
     logger.info(f"Error message displayed: {is_error_message_visible}")
     return is_error_message_visible
+
+
+def choose_room_and_get_the_rent_on_review_page(remove_coupan=False):
+    """Chooses a room and return the rent on the review page."""
+    logger.info("Choosing a room and get the rent on review page.")
+    click(choose_room_btn)
+    implicit_wait(5)
+    switch_to_new_tab()
+    wait_until_page_ready()
+    click(book_this_room_btn)
+    if remove_coupan:
+        logger.info("Removing applied coupon before getting the rent.")
+        scroll_to_center(remove_coupan_btn)
+        click(remove_coupan_btn)
+    wait_for_element_to_be_visible(total_room_rent)
+    room_rent_on_review_page = get_element_attribute(total_room_rent, "aria-label").split("Total Amount-")[1].strip()
+    logger.info(f"Room Rent on Review Page: {room_rent_on_review_page}")
+    return room_rent_on_review_page
+
+
+def fill_review_page_form_and_get_the_rent_on_payment_page():
+    """Fills the review page form with user details and returns the rent on the payment page."""
+    logger.info("Filling the review page form.")
+    scroll_element_into_view(form_field, replace_value="email")
+    type_value(form_field, "john.doe@example.com", replace_value="email")
+    type_value(form_field, "9876543210", replace_value="phoneNumber")
+    type_value(form_field, "John", replace_value="firstName")
+    type_value(form_field, "Doe", replace_value="lastName")
+    logger.info("Review page form filled.")
+    scroll_element_into_view(proceed_to_payment_btn)
+    click(proceed_to_payment_btn)
+    logger.info("Proceeded to payment page.")
+    wait_for_element_to_be_visible(rent_on_payment_page)
+    rent_payment_page = get_element_text(rent_on_payment_page)
+    logger.info(f"Rent on Payment Page: {rent_payment_page}")
+    return rent_payment_page
+
+
+def apply_coupan_and_get_discount_on_review_page():
+    """Applies a coupon and returns the total rent before discount and discount amount on the review page."""
+    logger.info("Applying coupon on review page.")
+    scroll_to_center(select_coupan_btn)
+    click(select_coupan_btn)
+    wait_for_element_to_be_visible(coupan_discount)
+    discount_amount = get_element_text(coupan_discount)[6:].strip()
+    logger.info(f"Discount Amount: {discount_amount}")
+    return discount_amount
+
+
+def get_total_rent_after_discount_on_review_page(total_rent_before_discount):
+    """Gets the total rent after discount on the review page."""
+    logger.info("Getting total rent after discount on review page.")
+    scroll_to_center(total_room_rent)
+    attribute_changed = wait_for_attribute_change(total_room_rent, "aria-label", total_rent_before_discount)
+    if not attribute_changed:
+        logger.error("Total rent after discount did not update as expected.")
+        raise Exception("Total rent after discount did not update as expected.")
+    total_rent_after_discount = get_element_attribute(total_room_rent, "aria-label").split("Total Amount-")[1].strip()
+    logger.info(f"Total Rent after Discount: {total_rent_after_discount}")
+    return total_rent_after_discount
