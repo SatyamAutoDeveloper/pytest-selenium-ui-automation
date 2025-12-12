@@ -9,6 +9,8 @@ on:
 jobs:
   Yatra_UI_Tests:
     runs-on: ubuntu-latest
+    container:
+      image: openjdk:8-jre-slim
 
     steps:
       - name: Checkout code
