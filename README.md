@@ -33,6 +33,7 @@ pytest-selenium-ui-automation/
 
 ```bash
 pytest tests/ # To run all tests in the tests directory
+pytest --headless tests/ # To run all tests in headless mode
 pytest tests/test_yatra_hotel_feature.py -m "positive" # To run tests with a specific marker
 ```
 
