@@ -9,6 +9,13 @@ on:
 jobs:
   Yatra_UI_Tests:
     runs-on: ubuntu-latest
+    services:
+      # Use an image specifically designed for Selenium and Chrome/Firefox
+      selenium:
+        # Example: Node that supports Chrome/Firefox with stable tags
+        image: selenium/standalone-chrome:latest 
+        ports:
+          - 4444:4444
 
     steps:
       - name: Checkout code
