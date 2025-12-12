@@ -50,14 +50,15 @@ Implemented retry logic for selenium actions to handle transient issues during U
 ## Implemented Extended Report(Allure Report) in the Pipeline
 Run the yatra_ui.yml Workflow in github actions to generate Allure Report from the Pipeline.
 
-## To Generate Allure Report in Local Machine
- # Setup Command Line Tool for Azure:
+
+# To Generate Allure Report in Local Machine
+## Setup Command Line Tool for Azure:
   - Download Zip: https://github.com/allure-framework/allure2/releases/tag/2.35.1
   - Add allure/bin to system variable path.
- # Run the below Command to Setup Allure on Project Level:
+## Run the below Command to Setup Allure on Project Level:
   - pip install allure-pytest
   - npm install -g allure-commandline
- # Configure below line in pytest.ini file for Allure Raw Results:
+## Configure below line in pytest.ini file for Allure Raw Results:
   - addopts = --alluredir=allure-results
 - To Generate and Open Allure HTML Report: run command: allure serve allure-results
 e.g. 
