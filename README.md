@@ -39,13 +39,16 @@ pytest tests/test_yatra_hotel_feature.py -m "positive" # To run tests with a spe
 ## Reporting
 After test execution, HTML reports will be generated in the `reports/` directory. Logs will be available in the `logs/` directory and screenshots of failed tests will be saved in the `screenshots/` directory.
 
+
 ## Custom Markers
 - `@pytest.mark.positive`: Marks positive test cases.
 - `@pytest.mark.negative`: Marks negative test cases.
 - `@pytest.mark.edge`: Marks edge test cases.
 
+
 ## retry logic on failed actions for selenium actions
 Implemented retry logic for selenium actions to handle transient issues during UI interactions. This ensures that temporary glitches do not cause test failures, improving the reliability of the test suite.
+
 
 ## Implemented Extended Report(Allure Report) in the Pipeline
 Run the yatra_ui.yml Workflow in github actions to generate Allure Report from the Pipeline.
@@ -61,6 +64,7 @@ Run the yatra_ui.yml Workflow in github actions to generate Allure Report from t
 ## Configure below line in pytest.ini file for Allure Raw Results:
   - addopts = --alluredir=allure-results
 - To Generate and Open Allure HTML Report: run command: allure serve allure-results
+
 e.g. 
  
 ![Allure Report](Allure_Report_Graphical_View.PNG)
