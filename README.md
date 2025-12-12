@@ -42,7 +42,7 @@ After test execution, HTML reports will be generated in the `reports/` directory
 ## Custom Markers
 - `@pytest.mark.positive`: Marks positive test cases.
 - `@pytest.mark.negative`: Marks negative test cases.
-- `@pytest.mark.edge`: Marks sanity test cases.
+- `@pytest.mark.edge`: Marks edge test cases.
 
 ## retry logic on failed actions for selenium actions
 Implemented retry logic for selenium actions to handle transient issues during UI interactions. This ensures that temporary glitches do not cause test failures, improving the reliability of the test suite.
