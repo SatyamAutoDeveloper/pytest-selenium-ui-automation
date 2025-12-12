@@ -143,6 +143,20 @@ def select_the_search_with_max_room(driver, rooms_to_add, guests_per_room):
     return actual_room_and_guests_info
 
 
+def remove_room_and_guest_selection():
+    """Removes all rooms except one default room from the room and guest selection."""
+    logger.info("Removing all room except one default room from the room and guest selection.")
+    click(open_room_and_guests_btn)
+    wait_for_element_to_be_visible(room_and_guests_popup)
+    remove_btn_count = get_elements_count(remove_room_button)
+    if remove_btn_count > 0:
+        for _ in range(remove_btn_count):
+            click(remove_room_button)
+    logger.info("All Room Removed Except Default One")
+    click(apply_room_and_guest_button)
+    logger.info("Applied room and guest selection after removal.")
+
+
 def get_more_than_15_days_checkout_error_message(checkout_more_than_15_days, checkout_calendar, expected_error_message):
     """gets the error message for 30 days checkout after check-in."""
     logger.info("Getting the error message for 30 days checkout after check-in.")
@@ -211,3 +225,29 @@ def get_total_rent_after_discount_on_review_page(total_rent_before_discount):
     total_rent_after_discount = get_element_attribute(total_room_rent, "aria-label").split("Total Amount-")[1].strip()
     logger.info(f"Total Rent after Discount: {total_rent_after_discount}")
     return total_rent_after_discount
+
+
+def fill_invalid_detail_in_form(invalid_detail, field_name):
+    """Fills the form with invalid user details"""
+    logger.info("Filling the invalid detail in review page form.")
+    scroll_to_center(form_field, replace_value=field_name[0])
+    type_value(form_field, invalid_detail, replace_value=field_name[0])
+    error_msg = get_element_text(invalid_error_message, replace_value=field_name[1])
+    logger.info(f"Error message displayed for invalid {field_name[0]}: {error_msg}")
+    return error_msg
+
+
+def fill_credit_card_details_and_get_invalid_card_error(card_details):
+    """Fills the credit card details and returns invalid card number error message."""
+    logger.info("Filling the credit card details on payment page.")
+    click(credit_card_option)
+    wait_for_element_to_be_visible(credit_card_input_fields, replace_value="cc_cno_id")
+    type_value(credit_card_input_fields, card_details["card_number"], replace_value="cc_cno_id")
+    type_value(credit_card_input_fields, card_details["name_on_card"], replace_value="cc_cardholder_name_id")
+    select_element_from_dropdown(credit_card_expiry_month_dropdown, card_details["expiry_month"])
+    select_element_from_dropdown(credit_card_expiry_year_dropdown, card_details["expiry_year"])
+    type_value(credit_card_input_fields, card_details["cvv"], replace_value="cc_cvv_id")
+    click(credit_card_input_fields, "payNow")
+    is_visible = is_element_displayed(invalid_card_number_error_message)
+    logger.info(f"Invalid card number error message: {is_visible}")
+    return is_visible

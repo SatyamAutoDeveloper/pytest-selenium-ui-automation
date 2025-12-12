@@ -2,6 +2,12 @@
   "invalid_checkout_date": -1,
   "checkout_calendar": 2,
   "invalid_city_name": "sskbsfdk",
+  "field_name_email": ["email", "Email Address"],
+  "field_name_phone": ["phoneNumber", "Phone Number"],
+  "invalid_email": "fhaskfh@com",
+  "incomplete_phone": "12345",
+  "invalid_email_msg": "Email is invalid",
+  "incomplete_phone_msg": "Phone number must be exactly 10 digits",
     "hotels_booking": {
       "city": "Bangalore,",
       "check_in_after_days": 1,
@@ -22,5 +28,12 @@
       "rooms_index": 8,
       "guests_per_room": {"1":3, "3":2, "5":2, "7":2},
       "expected_room_and_guests_info": "4 Rooms, 9 Guests"
+    },
+    "credit_card_details": {
+      "card_number": "6575135717120750",
+      "name_on_card": "Test User",
+      "expiry_month": "05",
+      "expiry_year": "2028",
+      "cvv": "123"
     }
 }
