@@ -10,9 +10,6 @@ jobs:
   Yatra_UI_Tests:
     runs-on: ubuntu-latest
 
-    env:
-      
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
