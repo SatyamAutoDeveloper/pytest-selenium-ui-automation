@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 yatra_hotel_data = file_handling.load_test_data("../testdata/yatra_hotel_data.json")
 yatra_common_data = file_handling.load_test_data("../testdata/yatra_common_data.json")
 
-'''
+
 @pytest.mark.positive
 def test_search_hotels_in_major_city_for_two_adults(driver):
     logger.info("Starting test: test_search_hotels_in_major_city_for_two_adults")
@@ -78,12 +78,13 @@ def test_checkout_more_than_15_days_after_checkin():
     is_true = get_more_than_15_days_checkout_error_message(checkout_days, checkout_calendar, error_msg)  # Check-out date: 31 days from today
     logger.info(f"Error message displayed: {is_true}")
     assert is_true is True, "Expected error message not displayed for more than 15 days checkout after check-in." 
-'''
+
 
 @pytest.mark.positive
 def test_fill_form_and_verify_rent_on_payment_page():
     logger.info("Starting test: test_fill_form_and_verify_rent_on_payment_page")
     select_yatra_service(yatra_common_data["hotels"])
+    remove_room_and_guest_selection()
     click_search_button()
     total_rent_on_review_page = choose_room_and_get_the_rent_on_review_page()
     total_rent_on_payment_page = fill_review_page_form_and_get_the_rent_on_payment_page()
@@ -101,3 +102,42 @@ def test_apply_coupan_and_verify_discount_on_review_page():
     logger.info(f"Expected rent after discount: {expected_rent_after_discount}")
     actual_rent_after_discount = get_total_rent_after_discount_on_review_page(total_rent_before_discount)
     assert expected_rent_after_discount == int(actual_rent_after_discount.replace(',', '')), "Total rent after applying coupon does not match expected rent."
+
+
+@pytest.mark.negative
+def test_verify_invalid_email_error_on_review_page_form():
+    logger.info("Starting test: test_verify_invalid_email_error_on_review_page_form")
+    field_name = yatra_hotel_data["field_name_email"]
+    invalid_email = yatra_hotel_data["invalid_email"]
+    expected_error_msg = yatra_hotel_data["invalid_email_msg"]
+    select_yatra_service(yatra_common_data["hotels"])
+    click_search_button()
+    choose_room_and_get_the_rent_on_review_page()
+    actual_error_msg = fill_invalid_detail_in_form(invalid_email, field_name)
+    assert actual_error_msg == expected_error_msg, "Invalid email error message does not match expected message."
+
+
+@pytest.mark.negative
+def test_verify_incomplete_phone_number_error_on_review_page_form():
+    logger.info("Starting test: test_verify_incomplete_phone_number_error_on_review_page_form")
+    field_name = yatra_hotel_data["field_name_phone"]
+    incomplete_phone = yatra_hotel_data["incomplete_phone"]
+    expected_error_msg = yatra_hotel_data["incomplete_phone_msg"]
+    select_yatra_service(yatra_common_data["hotels"])
+    click_search_button()
+    choose_room_and_get_the_rent_on_review_page()
+    actual_error_msg = fill_invalid_detail_in_form(incomplete_phone, field_name)
+    assert actual_error_msg == expected_error_msg, "Incomplete phone number error message does not match expected message."
+
+
+@pytest.mark.edge
+def test_verify_invalid_credit_card_number_error_on_payment_page():
+    logger.info("Starting test: test_verify_invalid_credit_card_number_error_on_payment_page")
+    credit_card_details = yatra_hotel_data["credit_card_details"]
+    select_yatra_service(yatra_common_data["hotels"])
+    remove_room_and_guest_selection()
+    click_search_button()
+    choose_room_and_get_the_rent_on_review_page()
+    fill_review_page_form_and_get_the_rent_on_payment_page()
+    is_error_msg_present = fill_credit_card_details_and_get_invalid_card_error(credit_card_details)
+    assert is_error_msg_present == True, "Invalid credit card number error message does not match expected message."

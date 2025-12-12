@@ -533,6 +533,13 @@ def switch_to_new_tab():
     driver.switch_to.window(driver.window_handles[-1])
 
 
+def switch_to_original_tab():
+    """Switches the driver's context back to the original browser tab."""
+    driver = get_driver()
+    logger.info("Switching back to the original browser tab.")
+    driver.switch_to.window(driver.window_handles[0])
+
+
 def wait_until_page_ready(timeout=10, poll_frequency=0.5):
     """Waits until the page's readyState is 'complete'."""
     driver = get_driver()
@@ -561,3 +568,27 @@ def scroll_to_center(locator, shadow_dom=False, replace_value=None):
     """
     elem = find_element(locator, replace_value, shadow_dom)
     get_driver().execute_script("arguments[0].scrollIntoView({block: 'center'});", elem)
+
+
+def get_elements_count(locator, shadow_dom=False, replace_value=None):
+    """
+    Returns the count of elements found by the given locator.
+
+    Parameters
+    ----------
+    locator : Any
+        The locator used to find elements. Typically a tuple like (By.METHOD, selector)
+        or a selector string accepted by the project's find_elements helper.
+    shadow_dom : bool, optional
+        If True, instruct find_elements to search inside shadow DOM roots where supported.
+        Defaults to False.
+    replace_value : Any, optional
+        Optional value used to replace placeholders in the locator prior to searching
+        (useful when locators are templates that require runtime values). Defaults to None.
+
+    Returns
+    -------
+    int
+        The count of elements found by the locator. Returns 0 if no elements are found.
+    """
+    return len(find_elements(locator, shadow_dom, replace_value))
