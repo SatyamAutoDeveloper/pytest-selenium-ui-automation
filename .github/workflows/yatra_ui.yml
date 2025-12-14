@@ -1,6 +1,4 @@
 name: YATRA UI Tests
-permissions:
-  contents: read
 
 on:
   workflow_dispatch:
@@ -54,9 +52,10 @@ jobs:
 
       - name: Run UI tests
         run: |
-          pytest --headless tests/ --alluredir=allure-results
+          pytest tests/ --alluredir=allure-results
 
       - name: Generate Allure Report
+        if: always()
         uses: simple-elf/allure-report-action@v1.7
         id: allure-report
         with:
@@ -64,8 +63,6 @@ jobs:
           allure_results: allure-results
           # The directory where the final HTML report will be generated
           report_path: allure-report
-          # Use a GitHub Pages branch to host the report (optional, but good practice)
-          gh_pages: gh-pages
 
       - name: Archive raw Allure results
         uses: actions/upload-artifact@v4
