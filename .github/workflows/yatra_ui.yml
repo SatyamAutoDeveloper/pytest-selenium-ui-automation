@@ -19,18 +19,14 @@ jobs:
 
       - name: Install Google Chrome
         run: |
-          # 1. Install Chrome dependencies (as you correctly identified)
           sudo apt-get update
           sudo apt-get install -y wget unzip libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1 libxi6 libxcomposite1 libxrandr2 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgtk-3-0 --no-install-recommends && rm -rf /var/lib/apt/lists/*
 
-          # 2. Install Google Chrome Stable
           wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
           sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
 
-          # 3. Install Chromedriver using the correct versioning tool (or manually)
-          # Use the latest recommended method: downloading from Chrome for Testing
           CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
           MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
 
@@ -41,7 +37,6 @@ jobs:
           sudo mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
           sudo rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
           
-          # Optional: Verify driver installation
           chromedriver --version
 
       - name: Install dependencies
@@ -51,27 +46,17 @@ jobs:
 
       - name: Run UI tests
         run: |
-          pytest tests/ --alluredir=allure-results
+          pytest tests/
 
-      - name: Generate Allure Report
+      - name: Create artifacts archive
         if: always()
-        uses: simple-elf/allure-report-action@v1.7
-        id: allure-report
-        with:
-          # The directory where the raw results from Step 4 are stored
-          allure_results: allure-results
-          # The directory where the final HTML report will be generated
-          allure_report: allure-report
+        run: |
+          zip -r test-artifacts.zip reports/ logs/ screenshots/ || true
 
-      - name: Archive raw Allure results
+      - name: Upload artifacts
+        if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: raw-allure-results
-          path: allure-results
-
-      - name: Upload Allure HTML Report
-        uses: actions/upload-artifact@v4
-        with:
-          name: allure-html-report
-          path: allure-report
+          name: test-artifacts
+          path: test-artifacts.zip
           retention-days: 7
