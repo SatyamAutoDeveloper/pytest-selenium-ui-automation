@@ -21,13 +21,30 @@ jobs:
 
       - name: Install Google Chrome
         run: |
+          # 1. Install Chrome dependencies (as you correctly identified)
           sudo apt-get update
-          sudo apt-get install -y wget
+          sudo apt-get install -y wget unzip libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1 libxi6 libgconf-2-4 libxcomposite1 libxrandr2 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgtk-3-0 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+          # 2. Install Google Chrome Stable
           wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
           sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
           sudo apt-get update
           sudo apt-get install -y google-chrome-stable
-          google-chrome --version
+
+          # 3. Install Chromedriver using the correct versioning tool (or manually)
+          # Use the latest recommended method: downloading from Chrome for Testing
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
+
+          DRIVER_URL=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${MAJOR_VERSION}" | xargs -I {} echo "https://edgedl.me.gvt1.com/edgedl/chrome/chrome-for-testing/{}/linux64/chromedriver-linux64.zip")
+          
+          wget -O /tmp/chromedriver.zip $DRIVER_URL
+          sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
+          sudo mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          sudo rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
+          
+          # Optional: Verify driver installation
+          chromedriver --version
 
       - name: Install dependencies
         run: |
@@ -38,7 +55,6 @@ jobs:
       - name: Run UI tests
         run: |
           pytest --headless tests/ --alluredir=allure-results
-        continue-on-error: true
 
       - name: Generate Allure Report
         uses: simple-elf/allure-report-action@v1.7
