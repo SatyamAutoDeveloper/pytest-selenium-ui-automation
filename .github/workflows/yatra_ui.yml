@@ -46,7 +46,7 @@ jobs:
 
       - name: Run UI tests
         run: |
-          pytest tests/
+          pytest --headless tests/
 
       - name: Create artifacts archive
         if: always()
