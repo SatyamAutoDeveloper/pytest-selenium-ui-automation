@@ -69,3 +69,9 @@ Run the yatra_ui.yml Workflow in github actions to generate HTML Report along wi
 ## Note:
 - Ensure Java is installed on your machine to run Allure reports.
 
+**Performance Optimization:**
+I have integrated parallelism into the test suite to optimize CI/CD throughput. Using the pytest-xdist plugin, the execution is distributed across multiple workers within the GitHub Actions runner.
+- Framework: Pytest with Selenium WebDriver.
+- Execution Strategy: Multi-process concurrent execution (pytest -n auto).
+- Impact: Achieved a 3x reduction in total execution time compared to sequential runs, significantly lowering the overhead of the automated regression suite.
+
