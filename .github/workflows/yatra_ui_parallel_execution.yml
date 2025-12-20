@@ -1,0 +1,74 @@
+#  YATRA UI Tests PARALLEL Execution with Allure Report
+name: YATRA UI Tests PARALLEL Execution
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  Yatra_UI_Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1 libxi6 libxcomposite1 libxrandr2 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgtk-3-0 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
+          sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
+
+          DRIVER_URL=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${MAJOR_VERSION}" | xargs -I {} echo "https://storage.googleapis.com/chrome-for-testing-public/{}/linux64/chromedriver-linux64.zip")
+          
+          wget -O /tmp/chromedriver.zip $DRIVER_URL
+          sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
+          sudo mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          sudo rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
+          
+          chromedriver --version
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest-xdist
+
+      - name: Run UI tests
+        run: |
+          pytest -n auto --headless tests/ --alluredir=allure-results
+        continue-on-error: true
+
+      - name: Generate Allure Report
+        uses: simple-elf/allure-report-action@master
+        id: allure-report
+        with:
+          # The directory where the raw results from Step 4 are stored
+          allure_results: allure-results
+          # The directory where the final HTML report will be generated
+          report_path: allure-report
+
+      - name: Archive raw Allure results
+        uses: actions/upload-artifact@v4
+        with:
+          name: raw-allure-results
+          path: allure-results
+
+      - name: Upload Allure HTML Report
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-html-report
+          path: allure-report
+          retention-days: 7
