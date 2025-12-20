@@ -56,6 +56,8 @@ Run the yatra_ui.yml Workflow in github actions to generate HTML Report along wi
 
 
 # To Generate Allure Report in Local Machine
+## Note:
+- Ensure Java is installed on your machine to run Allure reports.
 ## Setup Command Line Tool for Azure:
   - Download Zip: https://github.com/allure-framework/allure2/releases/tag/2.35.1
   - Add allure/bin to system variable path.
@@ -66,10 +68,8 @@ Run the yatra_ui.yml Workflow in github actions to generate HTML Report along wi
   - addopts = --alluredir=allure-results
 - To Generate and Open Allure HTML Report: run command: allure serve allure-results
 
-## Note:
-- Ensure Java is installed on your machine to run Allure reports.
 
-**Performance Optimization:**
+## Performance Optimization:
 I have integrated parallelism into the test suite to optimize CI/CD throughput. Using the pytest-xdist plugin, the execution is distributed across multiple workers within the GitHub Actions runner.
 - Framework: Pytest with Selenium WebDriver.
 - Execution Strategy: Multi-process concurrent execution (pytest -n auto).
