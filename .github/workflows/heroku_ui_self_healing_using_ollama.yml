@@ -1,0 +1,76 @@
+
+name: Heroku UI Tests with Self-Healing (Ollama)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Heroku_UI_Self_Healing_Tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install Google Chrome
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget unzip libglib2.0-0 libnss3 libgconf-2-4 libfontconfig1 libxi6 libxcomposite1 libxrandr2 libasound2 libatk1.0-0 libatk-bridge2.0-0 libcups2 libdrm2 libgtk-3-0 --no-install-recommends && rm -rf /var/lib/apt/lists/*
+
+          wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | sudo gpg --dearmor -o /usr/share/keyrings/google-chrome-keyring.gpg
+          sudo sh -c 'echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list'
+          sudo apt-get update
+          sudo apt-get install -y google-chrome-stable
+
+          CHROME_VERSION=$(google-chrome --version | awk '{print $3}')
+          MAJOR_VERSION=$(echo $CHROME_VERSION | cut -d'.' -f1)
+
+          DRIVER_URL=$(wget -qO- "https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_${MAJOR_VERSION}" | xargs -I {} echo "https://storage.googleapis.com/chrome-for-testing-public/{}/linux64/chromedriver-linux64.zip")
+          
+          wget -O /tmp/chromedriver.zip $DRIVER_URL
+          sudo unzip /tmp/chromedriver.zip -d /usr/local/bin/
+          sudo mv /usr/local/bin/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver
+          sudo rm -rf /tmp/chromedriver.zip /usr/local/bin/chromedriver-linux64
+          
+          chromedriver --version
+
+      - name: Install Ollama
+        run: |
+          curl -fsSL https://ollama.ai/install.sh | sh
+          ollama --version
+
+      - name: Start Ollama service
+        run: |
+          ollama serve &
+          sleep 10
+
+      - name: Pull Ollama model
+        run: |
+          ollama pull qwen2.5-coder:7b
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run Heroku UI tests with self-healing
+        run: |
+          pytest --headless tests/heroku_app
+
+      - name: Create artifacts archive
+        if: always()
+        run: |
+          zip -r test-artifacts.zip reports/ logs/ screenshots/ || true
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-artifacts
+          path: test-artifacts.zip
+          retention-days: 7

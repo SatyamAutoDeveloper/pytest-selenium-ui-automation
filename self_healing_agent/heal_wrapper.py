@@ -1,12 +1,12 @@
 from selenium.webdriver.common.by import By
-from helpers.locator_store_helper import LocatorStore
+from self_healing_agent.locator_store_helper import LocatorStore
 from helpers.webdriver_actions import find_element
 from selenium.common.exceptions import (
     NoSuchElementException,
     ElementNotVisibleException,
     InvalidSelectorException,
 )
-from helpers.ai_healing import OllamaHealer
+from self_healing_agent.ai_healing import OllamaHealer
 import logging
 import json
 

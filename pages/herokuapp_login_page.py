@@ -1,5 +1,5 @@
 import time
-from helpers.heal_wrapper import SmartDriver
+from self_healing_agent.heal_wrapper import SmartDriver
 from locators.herokuapp_login_locators import *
 import logging
 
