@@ -52,7 +52,10 @@ Implemented retry logic for selenium actions to handle transient issues during U
 
 
 ## Uploading Artifacts after each execution with zipping(HTML Report, Screenshots, Logs) in the Pipeline.
-Run the yatra_ui.yml Workflow in github actions to generate HTML Report along with logs and screenshots from the Pipeline.
+- Run the yatra_ui.yml Workflow in github actions to generate HTML Report along with logs and screenshots from the Pipeline.
+- Run the yatra_ui_parallel_execution.yml Workflow in github actions to generate Allure Report along with logs and screenshots from the Pipeline with Parallel Execution.
+- Run the heroku_ui_self_healing_using_ollama.yml Workflow in github actions to generate HTML Report along with logs and screenshots from the Pipeline with Self-Healing Agent using Ollama Model.
+- All artifacts will be uploaded after each execution in the workflow run.
 
 
 # To Generate Allure Report in Local Machine
@@ -75,3 +78,6 @@ I have integrated parallelism into the test suite to optimize CI/CD throughput. 
 - Execution Strategy: Multi-process concurrent execution (pytest -n auto).
 - Impact: Achieved a 3x reduction in total execution time compared to sequential runs, significantly lowering the overhead of the automated regression suite.
 
+
+## Self-Healing Agent Documentation
+Detailed Documentation Link for Self-Healing Agent: [https://github.com/SatyamAutoDeveloper/pytest-selenium-ui-automation/wiki/Self%E2%80%90Healing-Agent-Documentation]

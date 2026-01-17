@@ -50,7 +50,7 @@ def select_city(city_name, default_city):
     wait_for_element_to_be_visible(flight_input)
     type_value(flight_input, city_name)
     explicit_wait(
-        select_city_option, timeout=5, replace_value=city_name
+        select_city_option, timeout=30, replace_value=city_name
     )  # Wait for options to load
     click(select_city_option, city_name)
 
@@ -176,6 +176,7 @@ def set_price_filter(driver, target_price):
         int(max_price),
         final_target_price,
     )
+    wait_for_element_to_be_visible(target_price_elem, timeout=15)
     actual_price = get_element_text(target_price_elem)
     assert (
         int(min_price) + 9900 <= int(actual_price.replace(",", "")) <= int(min_price) + 10100
@@ -222,7 +223,9 @@ def select_multi_cities(cities_list, journey_type, default_city="Select City"):
         if trip["to_city"] == "New Delhi":
             logger.info("all trips are selected")
             break
+        wait_for_element_to_be_visible(add_another_city_btn)
         click(add_another_city_btn)
+    wait_for_element_to_be_visible(multi_city_search_btn)
     click(multi_city_search_btn)
 
 
