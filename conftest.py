@@ -183,7 +183,7 @@ def driver(request):
     clear_driver()
     logger.info("WebDriver instance cleared and browser quit.")
 
-@pytest.fixture(scope="function", autouse=True)
+@pytest.fixture(scope="function")
 def load_base_url(driver):
     """
     Navigates to the pre-configured base URL before each test function.

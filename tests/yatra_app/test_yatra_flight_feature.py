@@ -1,7 +1,6 @@
 import logging
 import pytest 
 from helpers import file_handling
-from helpers.webdriver_actions import get_current_url
 from pages.yatra_flight_object import *
 from pages.yatra_common_object import *
 
@@ -10,7 +9,7 @@ yatra_data = file_handling.load_test_data("../testdata/yatra_flight_data.json")
 yatra_common_data = file_handling.load_test_data("../testdata/yatra_common_data.json")
 
 @pytest.mark.positive
-def test_one_way_search_flights():
+def test_one_way_search_flights(load_base_url):
     logger.info("Starting test: test_one_way_search_flights")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
@@ -23,7 +22,7 @@ def test_one_way_search_flights():
 
 
 @pytest.mark.positive
-def test_round_trip_search_international_flights():
+def test_round_trip_search_international_flights(load_base_url):
     logger.info("Starting test: test_round_trip_search_international_flights")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["round_trip"])
@@ -38,7 +37,7 @@ def test_round_trip_search_international_flights():
 
 
 @pytest.mark.positive
-def test_apply_multiple_valid_filters(driver):
+def test_apply_multiple_valid_filters(driver, load_base_url):
     logger.info("Starting test: Apply multiple valid filters (e.g., Airlines, Price Range, and Departure Time).")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
@@ -48,7 +47,7 @@ def test_apply_multiple_valid_filters(driver):
     
 
 @pytest.mark.positive
-def test_multi_city_flight_search():
+def test_multi_city_flight_search(load_base_url):
     logger.info("Starting test: test_multi_city_flight_search")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["multi_city"])
@@ -58,7 +57,7 @@ def test_multi_city_flight_search():
 
 
 @pytest.mark.negative
-def test_search_flight_with_past_date():
+def test_search_flight_with_past_date(load_base_url):
     logger.info("Starting test: test_search_flight_with_past_date")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
@@ -66,7 +65,7 @@ def test_search_flight_with_past_date():
 
 
 @pytest.mark.negative
-def test_search_flight_same_city():
+def test_search_flight_same_city(load_base_url):
     logger.info("Starting test: test_search_flight_same_city")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
@@ -77,7 +76,7 @@ def test_search_flight_same_city():
 
 
 @pytest.mark.negative
-def test_search_flight_with_no_available_flights_route():
+def test_search_flight_with_no_available_flights_route(load_base_url):
     logger.info("Starting test: test_search_flight_with_no_available_flights_route")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])
@@ -89,7 +88,7 @@ def test_search_flight_with_no_available_flights_route():
 
 
 @pytest.mark.edge
-def test_search_flight_with_max_allowed_adults_and_infants():
+def test_search_flight_with_max_allowed_adults_and_infants(load_base_url):
     logger.info("Starting test: test_search_flight_with_max_allowed_adults_and_infants")
     adult_traveller = yatra_data["one_way_flight"]["passengers"]["travellers_type"][0]
     max_adult = yatra_data["one_way_flight"]["passengers"]["max_adults"]
@@ -105,7 +104,7 @@ def test_search_flight_with_max_allowed_adults_and_infants():
 
 
 @pytest.mark.edge
-def test_input_flight_with_invalid_city():
+def test_input_flight_with_invalid_city(load_base_url):
     logger.info("Starting test: test_input_flight_with_invalid_city")
     select_yatra_service(yatra_common_data["flights"])
     select_flight_way(yatra_data["one_way"])

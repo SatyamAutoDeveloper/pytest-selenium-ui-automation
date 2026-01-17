@@ -46,7 +46,7 @@ jobs:
 
       - name: Run UI tests
         run: |
-          pytest --headless tests/
+          pytest --headless tests/yatra_app
 
       - name: Create artifacts archive
         if: always()

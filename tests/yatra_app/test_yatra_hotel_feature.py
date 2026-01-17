@@ -10,7 +10,7 @@ yatra_common_data = file_handling.load_test_data("../testdata/yatra_common_data.
 
 
 @pytest.mark.positive
-def test_search_hotels_in_major_city_for_two_adults(driver):
+def test_search_hotels_in_major_city_for_two_adults(driver, load_base_url):
     logger.info("Starting test: test_search_hotels_in_major_city_for_two_adults")
     select_yatra_service(yatra_common_data["hotels"])
     select_city(driver, yatra_hotel_data["hotels_booking"]["city"])
@@ -19,7 +19,7 @@ def test_search_hotels_in_major_city_for_two_adults(driver):
 
 
 @pytest.mark.positive
-def test_apply_complex_filters_in_hotel_search(driver):
+def test_apply_complex_filters_in_hotel_search(driver, load_base_url):
     logger.info("Starting test: test_apply_complex_filters_in_hotel_search")
     expected_filters = [
         yatra_hotel_data["complex_filters"]["star_rating"],
@@ -36,7 +36,7 @@ def test_apply_complex_filters_in_hotel_search(driver):
 
 
 @pytest.mark.negative
-def test_selecting_checkout_date_before_checkin_date():
+def test_selecting_checkout_date_before_checkin_date(load_base_url):
     logger.info("Starting test: test_selecting_checkout_date_before_checkin_date")
     invalid_checkout_days = yatra_hotel_data["invalid_checkout_date"]
     checkout_calendar = yatra_hotel_data["checkout_calendar"]
@@ -46,7 +46,7 @@ def test_selecting_checkout_date_before_checkin_date():
 
 
 @pytest.mark.negative
-def test_verify_invalid_city_search_shows_empty_list():
+def test_verify_invalid_city_search_shows_empty_list(load_base_url):
     logger.info("Starting test: test_verify_invalid_city_search_shows_empty_list")
     city_name = yatra_hotel_data["invalid_city_name"]
     select_yatra_service(yatra_common_data["hotels"])
@@ -55,7 +55,7 @@ def test_verify_invalid_city_search_shows_empty_list():
 
 
 @pytest.mark.edge
-def test_search_with_max_rooms(driver):
+def test_search_with_max_rooms(driver, load_base_url):
     logger.info("Starting test: test_search_with_max_rooms")
     rooms_to_add = yatra_hotel_data["add_multiple_guests_rooms"]["rooms_index"]
     guests_per_room = yatra_hotel_data["add_multiple_guests_rooms"]["guests_per_room"]
@@ -69,7 +69,7 @@ def test_search_with_max_rooms(driver):
 
 
 @pytest.mark.edge
-def test_checkout_more_than_15_days_after_checkin():
+def test_checkout_more_than_15_days_after_checkin(load_base_url):
     logger.info("Starting test: test_checkout_more_than_15_days_after_checkin")
     checkout_days = yatra_hotel_data["checkout_more_than_15_days"]["check_out_after_days"]
     checkout_calendar = yatra_hotel_data["checkout_calendar"] 
@@ -81,7 +81,7 @@ def test_checkout_more_than_15_days_after_checkin():
 
 
 @pytest.mark.positive
-def test_fill_form_and_verify_rent_on_payment_page():
+def test_fill_form_and_verify_rent_on_payment_page(load_base_url):
     logger.info("Starting test: test_fill_form_and_verify_rent_on_payment_page")
     select_yatra_service(yatra_common_data["hotels"])
     remove_room_and_guest_selection()
@@ -92,7 +92,7 @@ def test_fill_form_and_verify_rent_on_payment_page():
 
 
 @pytest.mark.positive
-def test_apply_coupan_and_verify_discount_on_review_page():
+def test_apply_coupan_and_verify_discount_on_review_page(load_base_url):
     logger.info("Starting test: test_apply_coupan_and_verify_discount_on_review_page")
     select_yatra_service(yatra_common_data["hotels"])
     click_search_button()
@@ -105,7 +105,7 @@ def test_apply_coupan_and_verify_discount_on_review_page():
 
 
 @pytest.mark.negative
-def test_verify_invalid_email_error_on_review_page_form():
+def test_verify_invalid_email_error_on_review_page_form(load_base_url):
     logger.info("Starting test: test_verify_invalid_email_error_on_review_page_form")
     field_name = yatra_hotel_data["field_name_email"]
     invalid_email = yatra_hotel_data["invalid_email"]
@@ -118,7 +118,7 @@ def test_verify_invalid_email_error_on_review_page_form():
 
 
 @pytest.mark.negative
-def test_verify_incomplete_phone_number_error_on_review_page_form():
+def test_verify_incomplete_phone_number_error_on_review_page_form(load_base_url):
     logger.info("Starting test: test_verify_incomplete_phone_number_error_on_review_page_form")
     field_name = yatra_hotel_data["field_name_phone"]
     incomplete_phone = yatra_hotel_data["incomplete_phone"]
@@ -131,7 +131,7 @@ def test_verify_incomplete_phone_number_error_on_review_page_form():
 
 
 @pytest.mark.edge
-def test_verify_invalid_credit_card_number_error_on_payment_page():
+def test_verify_invalid_credit_card_number_error_on_payment_page(load_base_url):
     logger.info("Starting test: test_verify_invalid_credit_card_number_error_on_payment_page")
     credit_card_details = yatra_hotel_data["credit_card_details"]
     select_yatra_service(yatra_common_data["hotels"])
