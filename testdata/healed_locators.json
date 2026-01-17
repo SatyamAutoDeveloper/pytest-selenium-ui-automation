@@ -1,0 +1,7 @@
+{
+    "//input[@id='p0']": "(//label[text()='Username']/following-sibling::input)[1]",
+    "//input[@id='p1']": "//input[@id='password']",
+    "//button[@type='st']": "//button[@class='radius']",
+    "//button[@type='lgn']": "//button[@class='radius' and contains(normalize-space(), 'Login')]",
+    "/div[@id='lgn-scs-msg']": "//div[@id='flash-messages']/div[contains(normalize-space(), 'You logged into a secure area!')]"
+}
