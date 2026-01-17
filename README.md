@@ -9,6 +9,7 @@ Download and Install Python 3.10+ version
 ```
 pytest-selenium-ui-automation/
 ├── pages/                 # Page Object Model classes
+├── self_healing_agent/     # Self-Healing Agent for UI tests
 ├── tests/                 # Test scripts organized by feature
 ├── testdata/              # Test data files(.json)
 ├── config.ini             # Configuration files and settings
