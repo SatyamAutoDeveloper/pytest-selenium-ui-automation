@@ -48,7 +48,7 @@ jobs:
 
       - name: Run UI tests
         run: |
-          pytest -n auto --headless tests/ --alluredir=allure-results
+          pytest -n auto --headless tests/yatra_app --alluredir=allure-results
         continue-on-error: true
 
       - name: Create artifacts archive

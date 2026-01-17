@@ -1,7 +1,6 @@
 import logging
 import pytest 
 from helpers import file_handling
-from helpers.webdriver_actions import get_current_url
 from pages.yatra_flight_object import *
 from pages.yatra_common_object import *
 
